@@ -17,7 +17,6 @@ MARKDOWN """
 MARKDOWN """
 
 # MARKDOWN ```
-from pandas import DataFrame, read_csv
 import pandas as pd
 
 ################################################################################
@@ -111,5 +110,19 @@ print(countDF)
 # Add columns to existing dataframe
 x = sumDF.merge(countDF, on='BillNumber', how='inner')
 print(x)
+
+
+################################################################################
+# Group By AXIS
+# Here We demonstrate a horizontal axis group by operation of SUM
+################################################################################
+import pandas as pd
+SalesData = pd.DataFrame({'Region': ['North','East','West','South'],
+                          'SalesA': [100, 200, 300, 400],
+                          'SalesB': [1000, 2000, 3000, 4000]})
+print(SalesData)
+
+df2 = SalesData[['Region','SalesA','SalesB']].sum(axis=0)
+print(df2)
 
 # MARKDOWN ```
