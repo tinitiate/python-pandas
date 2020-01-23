@@ -9,137 +9,95 @@ ContentName: pandas-dataframe-operations
 ---
 MARKDOWN """
 
+""" MARKDOWN
+# Creat Psuedo Columns
+* Create column by applying a function on an existing column
+* Create column by applying operator on multiple existing columns
+MARKDOWN """
+# MARKDOWN ```
+from pandas import DataFrame
+
+# Create DataFrame
+training = {'Course': ['Python','Java','SQL'],
+            'Price': [3000.00,5000.00,6000.00] }
+
+df1 = DataFrame(training, columns= ['Course', 'Price'])
+print(df1)
+
+# Creating a Psuedo Column using mathematical operator
+# ##############################################################################
+df1['Discount'] = df1['Price']*(10/100)
+print(df1)
+
+
+# Create a Psuedo Column using a function
+# ##############################################################################
+# Function to apply discount to the price
+def ApplyDiscount(inPrice, inDiscount):
+    return inPrice - inDiscount
+
+# Apply the function
+df1['FinalPrice'] = df1.apply(lambda row: ApplyDiscount(row['Price'], row['Discount']), axis=1)
+print(df1)
+# MARKDOWN ```
+
 
 """ MARKDOWN
-#
-*
+# Pandas Dataframe Operations
+* DataFrame Column Change Index Values Operations
+* Stack
+* UnStack
+* Transpose
 MARKDOWN """
 
-
 # MARKDOWN ```
-# Notes
-# 1. DataFrame
-# 2. DataFrame Column Change Index Values Operations
-# 3. Stack
-# 4. UnStack
-# 5. Transpose
-
-# Import all libraries needed for the tutorial
-
-# General syntax to import specific functions in a library: 
-##from (library) import (specific library function)
-from pandas import DataFrame, read_csv
 import pandas as pd
+from pandas import DataFrame
 
 
-# Read Data from CSV file
-file_cols = ['nations','capital','sales']
-df        = pd.read_csv("SalesData.csv", names=file_cols)
+# Data for DataFrame
+departments = { 'DeptID':[1,2,3,4]
+               ,'DName': ['Sales','Engg','Marketing','Management']
+               ,'StaffCount': [100,50,20,5] }
 
 
-# columns={'nations': 'NATIONS','capital': 'CAPITAL','sales': 'SALES'}
-
-# Change Index Names
-i=['a','b','c','d','e','f','g','h','i','j','k','l']
-
-# Index is no more from Digit 0 
-df.index=i
-print(df)
+# Create the DataFrame
+df1 = DataFrame(departments, columns= ['DeptID', 'DName', 'StaffCount'])
+print(df1)
 
 
-file_cols = ['nations','capital','sales']
-df        = pd.read_csv("SalesData.csv", names=['nations','capital'])
-
-l_stack = df.stack()
+## STACK
+## Creates Multilevel Indexes with repeating column names
+## #############################################################################
+l_stack = df1.stack()
 print(l_stack)
-print("\n")
 
 
-l_unstack = df.unstack()
+## UNSTACK
+## Creates Multilevel Indexes with repeating values
+## #############################################################################
+l_unstack = df1.unstack()
 print(l_unstack)
-print("\n")
 
 
-l_transpose = df.T
+## TRANSPOSE
+## Flips the orientation of a given range or array.
+## #############################################################################
+l_transpose = df1.T
 print(l_transpose)
 
-# MARKDOWN ```
 
-""" MARKDOWN
----
-YamlDesc: CONTENT-ARTICLE
-Title: Python Pandas Dataframe Operations
-MetaDescription: Python Pandas Dataframe Operations
-MetaKeywords: Python Pandas Dataframe Operations
-Author: (c) Venkata Bhattaram / www.github.com/tinitiate
-ContentName: pandas-dataframe-operations
----
-MARKDOWN """
+## PIVOT
+## Summarizes data, which could include sums, averages, etc. for each column
+## #############################################################################
+l_pivot = df1.pivot('DeptID', 'DName', 'StaffCount')
+print(l_pivot)
 
 
-""" MARKDOWN
-#
-*
-MARKDOWN """
-
-
-# 1. DataFrame
-# 2. axis
-
-# MARKDOWN ```
-# Import all libraries needed for the tutorial
-
-# General syntax to import specific functions in a library: 
-##from (library) import (specific library function)
-from pandas import DataFrame, read_csv
-import pandas as pd
-
-
-# Read Data from CSV file
-file_cols = ['Nations','Capital','Month','Sales']
-df        = pd.read_csv("MonthlySalesData.csv", names=file_cols)
-
-
-
-# Create a New Dataframe with only 3 of the 4 columns
-# Ignore the Header (As it contains the Column names)
-df1 = df[['Nations','Month','Sales']].ix[1:]
-
-
-# Conversion of DataTypes to make sure the 
-# Mathematical Operations will work
-df1.Nations = df1.Nations.astype(str)
-df1.Month   = df1.Month.astype(str)
-df1.Sales   = df1.Sales.astype(int)
-
-
-
-# Creating a Psuedo Column 
-df1['psuedo_column1'] = df1['Sales']*10
-print(df1)
-
-
-# Applying Axis Function
-# AXIS-0 Column Wise
-print("AXIS-0 Column Wise")
-df2 = df1[['Sales','psuedo_column1']].sum(axis=1)
-print(df2)
-
-
-# AXIS-1 Row Wise
-print("AXIS-1 Row Wise")
-df2 = df1[['Sales','psuedo_column1']].sum(axis=0)
-print(df2)
-
-
-
-
-# This is a Function to calcluate comission
-def getComission(i_sales):
-    return i_sales*(5/100)
-
-# Apply a Custom Function to a Data Frame
-print("Appplying Calculating Functions")
-df1['psuedo_column2'] = df1.apply(lambda row: getComission(row['Sales']), axis=1)
-print(df1)
+## MELT / UNPIVOT
+## Generates Rows for each column
+## #############################################################################
+l_melt = pd.melt(df1, id_vars = ['DeptID','DName'], value_vars = ['StaffCount'])
+print(l_melt)
+"""
 # MARKDOWN ```
